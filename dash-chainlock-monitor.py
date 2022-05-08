@@ -22,7 +22,6 @@ port = 20003
 #These are global since we're using multithreading. Please don't shoot me
 currentblockhash = "a0"
 blocktime = ""
-prevblockhash = ""
 chainlocked = False
 timenotlocked = 0
 informed = 0
@@ -89,7 +88,7 @@ def monitor_chainlocks():
         time.sleep(10)
     else:
         print("Block received", flush=True)
-        if chainlocked == False and currentblockhash == prevblockhash:
+        if chainlocked == False:
             timenotlocked = timenotlocked + 10
         else:
             timenotlocked = 0
@@ -129,8 +128,7 @@ def monitor_chainlocks():
 
         except SlackApiError as e:
             print(f"Error: {e}")
-    
-    prevblockhash = currentblockhash
+
     monitor_chainlocks()
 
 # ZMQ Setup
