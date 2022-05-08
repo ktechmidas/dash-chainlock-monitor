@@ -136,7 +136,7 @@ zmqContext = zmq.Context()
 zmqSubSocket = zmqContext.socket(zmq.SUB)
 zmqSubSocket.setsockopt(zmq.SUBSCRIBE, b"hashblock")
 zmqSubSocket.setsockopt(zmq.SUBSCRIBE, b"hashchainlock")
-zmqSubSocket.connect("tcp://138.68.22.77:%i" % port)
+zmqSubSocket.connect("tcp://127.0.0.1:%i" % port)
 
 
 # I banish thee to another thread, main thread stopping task.
