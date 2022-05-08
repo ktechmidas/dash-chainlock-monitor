@@ -77,7 +77,6 @@ def listen_to_zmq():
 
 def monitor_chainlocks():
     global currentblockhash
-    global prevblockhash
     global chainlocked
     global timenotlocked
 
