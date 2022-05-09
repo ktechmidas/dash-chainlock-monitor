@@ -61,6 +61,7 @@ def process_zmq_message(topic, body):
         print(data, flush=True)
 
 def listen_to_zmq():
+    while True:
         msg = zmqSubSocket.recv_multipart()
         topic = str(msg[0].decode("utf-8"))
         body = msg[1]
@@ -72,63 +73,60 @@ def listen_to_zmq():
 
         if topic == "hashblock" or topic == "hashchainlock":
             process_zmq_message(topic, body)
-        
-        listen_to_zmq()
 
 def monitor_chainlocks():
     global currentblockhash
     global chainlocked
     global timenotlocked
 
-    print(currentblockhash)
-    
-    if currentblockhash == "a0":
-        print("No blocks received yet... sleeping", flush=True)
-        time.sleep(10)
-    else:
-        print("Block received", flush=True)
-        if chainlocked == False:
-            timenotlocked = timenotlocked + 10
+    while True:
+        print(currentblockhash)
+        
+        if currentblockhash == "a0":
+            print("No blocks received yet... sleeping", flush=True)
+            time.sleep(10)
         else:
-            timenotlocked = 0
-            print("block "+currentblockhash+" locked")
-        time.sleep(10)
-    
-    if timenotlocked > 30:
-        try:
-            # Call the conversations.list method using the WebClient
-            result = client.chat_postMessage(
-            channel=channel_id,
-            text="ALERT: Block "+currentblockhash+" not locked for "+timenotlocked+" seconds. Please check!"
-            # You could also use a blocks[] array to send richer content
-            )
-
-        except SlackApiError as e:
-            print(f"Error: {e}")
-    elif timenotlocked > 90:
-        try:
-            if informed == 0:
-                # Call the conversations.list method using the WebClient
-                result = client.chat_postMessage(
-                channel=channel_id,
-                text="<!channel> ALERT: Block "+currentblockhash+" not locked for "+timenotlocked+" seconds. Please check!"
-                # You could also use a blocks[] array to send richer content
-                )
-                informed = informed + 1
+            print("Block received", flush=True)
+            if chainlocked == False:
+                timenotlocked = timenotlocked + 10
             else:
+                timenotlocked = 0
+                print("block "+currentblockhash+" locked")
+            time.sleep(10)
+        
+        if timenotlocked > 30:
+            try:
                 # Call the conversations.list method using the WebClient
                 result = client.chat_postMessage(
                 channel=channel_id,
-                text="<!channel> ALERT: Block "+currentblockhash+" not locked for "+timenotlocked+" seconds. This will be the final message from the bot in order to not overload the channel with useless information. Please restart manually"
+                text="ALERT: Block "+currentblockhash+" not locked for "+timenotlocked+" seconds. Please check!"
                 # You could also use a blocks[] array to send richer content
                 )
-                quit()
+
+            except SlackApiError as e:
+                print(f"Error: {e}")
+        elif timenotlocked > 90:
+            try:
+                if informed == 0:
+                    # Call the conversations.list method using the WebClient
+                    result = client.chat_postMessage(
+                    channel=channel_id,
+                    text="<!channel> ALERT: Block "+currentblockhash+" not locked for "+timenotlocked+" seconds. Please check!"
+                    # You could also use a blocks[] array to send richer content
+                    )
+                    informed = informed + 1
+                else:
+                    # Call the conversations.list method using the WebClient
+                    result = client.chat_postMessage(
+                    channel=channel_id,
+                    text="<!channel> ALERT: Block "+currentblockhash+" not locked for "+timenotlocked+" seconds. This will be the final message from the bot in order to not overload the channel with useless information. Please restart manually"
+                    # You could also use a blocks[] array to send richer content
+                    )
+                    quit()
 
 
-        except SlackApiError as e:
-            print(f"Error: {e}")
-
-    monitor_chainlocks()
+            except SlackApiError as e:
+                print(f"Error: {e}")
 
 # ZMQ Setup
 zmqContext = zmq.Context()
