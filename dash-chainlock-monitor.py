@@ -99,7 +99,7 @@ def monitor_chainlocks():
                 # Call the conversations.list method using the WebClient
                 result = client.chat_postMessage(
                 channel=channel_id,
-                text="ALERT: Block "+currentblockhash+" not locked for "+timenotlocked+" seconds. Please check!"
+                text="ALERT: Block "+str(currentblockhash)+" not locked for "+str(timenotlocked)+" seconds. Please check!"
                 # You could also use a blocks[] array to send richer content
                 )
 
@@ -111,7 +111,7 @@ def monitor_chainlocks():
                     # Call the conversations.list method using the WebClient
                     result = client.chat_postMessage(
                     channel=channel_id,
-                    text="<!channel> ALERT: Block "+currentblockhash+" not locked for "+timenotlocked+" seconds. Please check!"
+                    text="<!channel> ALERT: Block "+str(currentblockhash)+" not locked for "+str(timenotlocked)+" seconds. Please check!"
                     # You could also use a blocks[] array to send richer content
                     )
                     informed = informed + 1
@@ -119,7 +119,7 @@ def monitor_chainlocks():
                     # Call the conversations.list method using the WebClient
                     result = client.chat_postMessage(
                     channel=channel_id,
-                    text="<!channel> ALERT: Block "+currentblockhash+" not locked for "+timenotlocked+" seconds. This will be the final message from the bot in order to not overload the channel with useless information. Please restart manually"
+                    text="<!channel> ALERT: Block "+str(currentblockhash)+" not locked for "+str(timenotlocked)+" seconds. This will be the final message from the bot in order to not overload the channel with useless information. Please restart manually"
                     # You could also use a blocks[] array to send richer content
                     )
                     quit()
